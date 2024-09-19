@@ -36,7 +36,8 @@ def get_conference_cfp(
     zones = conference["zones"]
 
     driver.get(url)
-    cfp = find_element(driver, By.XPATH, xpath).text.rstrip()
+    cfp = find_element(driver, By.XPATH, xpath).text.split()
+    cfp = ' '.join(cfp)
 
     print("[{n:>15}]".format(n=name), end=" ")
     try:
