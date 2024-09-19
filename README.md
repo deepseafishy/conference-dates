@@ -21,6 +21,8 @@ python3 main.py
 ```
 
 ## TODO
-- [ ] Create multiple processes to gather information faster
+- [x] Create multiple processes to gather information faster
 - [ ] Sort conferences by the dates
 - [ ] Automatically renew conferences yearly
+- [ ] Automatically find CfP dates
+- [ ] Automatically look for extended CfP dates
