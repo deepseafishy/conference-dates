@@ -1,12 +1,10 @@
 from datetime import datetime
-from getpass import getpass
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote import webelement
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
-from zoneinfo import ZoneInfo
 import time
 
 
