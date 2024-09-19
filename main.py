@@ -13,7 +13,7 @@ def find_element(
     driver: webdriver,
     by: str,
     path: str,
-    timeout: int = 3,
+    timeout: int = 1,
 ) -> webelement:
     try:
         element = driver.find_element(by, path)
