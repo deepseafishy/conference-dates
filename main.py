@@ -57,13 +57,13 @@ if __name__ == "__main__":
             "fmt"  : "%B %d '%y %I:%M %p",
             "zones": 1,
         },
-        "EuroSys Spring": {
+        "Spring EuroSys": {
             "url"  : "https://2025.eurosys.org",
             "xpath": "/html/body/section/div/div/div/ul[1]/li[2]/strong",
             "fmt"  : "%A, %B %d, %Y",
             "zones": 1,
         },
-        "EuroSys Fall": {
+        "Fall EuroSys": {
             "url"  : "https://2025.eurosys.org",
             "xpath": "/html/body/section/div/div/div/ul[2]/li[2]/strong",
             "fmt"  : "%A, %B %d, %Y",
