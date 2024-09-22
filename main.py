@@ -67,7 +67,7 @@ def get_conference_cfp(
     time = time.astimezone(zones["KST"])
     result += str(time)
 
-    return result
+    return result, time
 
 
 def main(information) -> str:
@@ -97,10 +97,10 @@ def main(information) -> str:
         browser = webdriver.Firefox(service=service, options=options)
 
         """ crawl CfP information """
-        result = get_conference_cfp(browser, zones, conference, name)
+        result, time = get_conference_cfp(browser, zones, conference, name)
         browser.close()
 
-    return result
+    return result, time
 
 
 if __name__ == "__main__":
@@ -149,4 +149,5 @@ if __name__ == "__main__":
     }
 
     results = mp.Pool().map(main, zip(conferences.values(), conferences.keys()))
-    print('\n'.join(results))
+    results = sorted(results, key=lambda x: x[0])
+    print('\n'.join(result[0] for result in results))
