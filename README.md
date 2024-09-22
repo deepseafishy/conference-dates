@@ -22,7 +22,12 @@ python3 main.py
 
 ## TODO
 - [x] Create multiple processes to gather information faster
-- [ ] Sort conferences by the dates
-- [ ] Automatically renew conferences yearly
+- [x] Apply time zones
+- [x] Sort conferences by the dates
+- [ ] Add debug option
 - [ ] Automatically find CfP dates
 - [ ] Automatically look for extended CfP dates
+- [ ] Automatically renew conferences yearly
+  - [ ] Add conference dates
+  - [ ] Renew conferences after conference dates pass
+  - [ ] Show previous conference dates if the new conference site doesn't exist
