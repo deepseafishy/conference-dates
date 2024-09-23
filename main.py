@@ -87,7 +87,7 @@ def main(information) -> str:
     name       = information[1]
     # print("Getting {n}...".format(n=name))
 
-    with Display(visible=False, size=(10,10)):
+    with Display(visible=False):
         """ set up firefox.service """
         service = webdriver.firefox.service.Service()
         service.path = "/usr/bin/geckodriver"
