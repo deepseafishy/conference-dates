@@ -166,6 +166,21 @@ if __name__ == "__main__":
             "xpath": "/html/body/main/div/div[2]/div[2]/div[2]/div/aside/p[3]/b",
             "fmt"  : "%B %d, %Y",
         },
+        "Spring ASPLOS": {
+            "url"  : "https://www.asplos-conference.org/asplos2025/cfp",
+            "xpath": "/html/body/div/div/div/div/div/main/article/div/ul[1]/li[2]",
+            "fmt"  : "%B %d, %Y",
+        },
+        "Summer ASPLOS": {
+            "url"  : "https://www.asplos-conference.org/asplos2025/cfp",
+            "xpath": "/html/body/div/div/div/div/div/main/article/div/ul[2]/li[2]",
+            "fmt"  : "%B %d, %Y",
+        },
+        "Fall ASPLOS": {
+            "url"  : "https://www.asplos-conference.org/asplos2025/cfp",
+            "xpath": "/html/body/div/div/div/div/div/main/article/div/ul[3]/li[1]",
+            "fmt"  : "%B %d, %Y",
+        },
     }
 
     results = mp.Pool().map(main, zip(conferences.values(), conferences.keys()))
