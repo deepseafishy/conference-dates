@@ -149,5 +149,5 @@ if __name__ == "__main__":
     }
 
     results = mp.Pool().map(main, zip(conferences.values(), conferences.keys()))
-    results = sorted(results, key=lambda x: x[0])
+    results = sorted(results, key=lambda x: x[1])
     print('\n'.join(result[0] for result in results))
