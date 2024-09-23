@@ -161,6 +161,11 @@ if __name__ == "__main__":
                      "/div/div/div/div/div/div/ul/li[2]/strong",
             "fmt"  : "%A, %B %d, %Y, %I:%M %p",
         },
+        "APSys": {
+            "url"  : "https://ap-sys.org",
+            "xpath": "/html/body/main/div/div[2]/div[2]/div[2]/div/aside/p[3]/b",
+            "fmt"  : "%B %d, %Y",
+        },
     }
 
     results = mp.Pool().map(main, zip(conferences.values(), conferences.keys()))
