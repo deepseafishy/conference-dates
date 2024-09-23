@@ -37,7 +37,10 @@ def get_conference_cfp(
     result = "[{n:>15}] ".format(n=name)
 
     """ access URL """
-    driver.get(url)
+    try:
+        driver.get(url)
+    except:
+        return result + "Failed URL", datetime(1900, 1, 1, 0, 0).astimezone(zones["KST"])
 
     """ retrieve CfP information """
     try:
