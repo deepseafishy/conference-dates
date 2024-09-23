@@ -155,6 +155,12 @@ if __name__ == "__main__":
                      "/div/div/div/div/div/div/ul[1]/li[1]/strong",
             "fmt"  : "%A, %B %d, %Y, %I:%M %p",
         },
+        "ATC": {
+            "url"  : "https://www.usenix.org/conference/atc25/call-for-papers",
+            "xpath": "/html/body/div[2]/main/section/div[3]/article/div/div/div/div/div[1]/div/div/div/div/div/div" +
+                     "/div/div/div/div/div/div/ul/li[2]/strong",
+            "fmt"  : "%A, %B %d, %Y, %I:%M %p",
+        },
     }
 
     results = mp.Pool().map(main, zip(conferences.values(), conferences.keys()))
