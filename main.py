@@ -34,12 +34,16 @@ def get_conference_cfp(
     url   = conference["url"]
     xpath = conference["xpath"]
     fmt   = conference["fmt"]
+    result = "[{n:>15}] ".format(n=name)
 
     """ access URL """
     driver.get(url)
 
     """ retrieve CfP information """
-    cfp = find_element(driver, By.XPATH, xpath).text.upper().split()
+    try:
+        cfp = find_element(driver, By.XPATH, xpath).text.upper().split()
+    except:
+        return result + "Failed XPath", datetime(1900, 1, 1, 0, 0).astimezone(zones["KST"])
 
     """ find timezone """
     zone = ""
@@ -47,7 +51,6 @@ def get_conference_cfp(
         zone = substring if substring in zones.keys() else zone
 
     """ format string """
-    result = "[{n:>15}] ".format(n=name)
     fmt_len, cfp_len = len(fmt.split()), len(cfp)
     time = ' '.join(cfp)
     for i in range(cfp_len - fmt_len + 1):
