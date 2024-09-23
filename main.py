@@ -67,6 +67,9 @@ def get_conference_cfp(
     time = time.astimezone(zones["KST"])
     result += str(time)
 
+    """ return time in the same year for sorting """
+    time = time.replace(year=1900)
+
     return result, time
 
 
