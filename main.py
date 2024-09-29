@@ -151,8 +151,8 @@ if __name__ == "__main__":
             "fmt"  : "%B %d, %Y",
         },
         "PPoPP": {
-            "url"  : "https://ppopp25.sigplan.org",
-            "xpath": "/html/body/div/div[3]/div[1]/div[2]/div[2]/table/tbody/tr[3]/td",
+            "url"  : "https://ppopp25.sigplan.org/dates",
+            "xpath": "/html/body/div/div[3]/div[2]/div/table/tbody/tr[4]/td[1]",
             "fmt"  : "%a %d %b %Y",
         },
         "FAST": {
