@@ -62,16 +62,23 @@ def get_conference_cfp(
         except:
             pass
 
-    if zone == "":
+    if not isinstance(time, datetime):
+        """ print retrieved text if parsing failed """
+        result += time
+        time = datetime(1900, 1, 1, 0, 0).astimezone(zones["KST"])
+    elif zone == "":
         """ apply AoE if no timezone is specified """
         time += timedelta(hours=36)
         time = time.replace(tzinfo=timezone.utc)
+        """ apply KST """
+        time = time.astimezone(zones["KST"])
+        result += str(time)
     else:
         """ apply timezone if specified """
         time = time.replace(tzinfo=zones[zone])
-    """ apply KST """
-    time = time.astimezone(zones["KST"])
-    result += str(time)
+        """ apply KST """
+        time = time.astimezone(zones["KST"])
+        result += str(time)
 
     """ return time in the same year for sorting """
     time = time.replace(year=1900)
