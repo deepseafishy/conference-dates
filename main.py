@@ -126,6 +126,11 @@ if __name__ == "__main__":
             "xpath": "/html/body/form/main/div[1]/div/div/div[2]/div/div/div/div/div/div/ul[1]/li[2]",
             "fmt"  : "%B %d, %Y %I:%M %p",
         },
+        "DATE": {
+            "url"  : "https://www.date-conference.com/call-for-papers",
+            "xpath": "/html/body/div/main/div/div[3]/article/div/div[1]/table[1]/tbody/tr[3]/td[2]/b",
+            "fmt"  : "%A, %d %B %Y",
+        },
         "ICML": {
             "url"  : "https://icml.cc/Conferences/2024/Dates",
             "xpath": "/html/body/main/div[2]/div/div/div[3]/table/tbody/tr[13]/td[3]/span",
