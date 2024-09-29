@@ -114,6 +114,11 @@ def main(information) -> str:
 
 if __name__ == "__main__":
     conferences = {
+        "DAC": {
+            "url"  : "https://www.dac.com/Conference/2025-Call-for-Contributions",
+            "xpath": "/html/body/form/main/div[1]/div/div/div[2]/div/div/div/div/div/div/ul[1]/li[2]",
+            "fmt"  : "%B %d, %Y %I:%M %p",
+        },
         "ICML": {
             "url"  : "https://icml.cc/Conferences/2024/Dates",
             "xpath": "/html/body/main/div[2]/div/div/div[3]/table/tbody/tr[13]/td[3]/span",
