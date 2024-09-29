@@ -24,7 +24,7 @@ python3 main.py
 - [x] Create multiple processes to gather information faster
 - [x] Apply time zones
 - [x] Sort conferences by the dates
-- [ ] Add debug option
+- [ ] Add author notification dates
 - [ ] Automatically find CfP dates
 - [ ] Automatically look for extended CfP dates
 - [ ] Automatically renew conferences yearly
