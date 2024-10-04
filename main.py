@@ -86,7 +86,11 @@ def get_conference_cfp(
     return result, time
 
 
-def main(information) -> str:
+def main(
+    conferences: dict[str, dict[str, str]],
+    name: str,
+    queue: mp.Queue,
+) -> None:
     zones = {
         "PDT" : ZoneInfo("America/Los_Angeles"),
         "PST" : ZoneInfo("America/Los_Angeles"),
@@ -95,10 +99,6 @@ def main(information) -> str:
         "EST" : ZoneInfo("America/New_York"), # UTC-5
         "KST" : ZoneInfo("Asia/Seoul"),
     }
-
-    conference = information[0]
-    name       = information[1]
-    # print("Getting {n}...".format(n=name))
 
     with Display(visible=False):
         """ set up firefox.service """
@@ -113,10 +113,13 @@ def main(information) -> str:
         browser = webdriver.Firefox(service=service, options=options)
 
         """ crawl CfP information """
-        result, time = get_conference_cfp(browser, zones, conference, name)
+        result, time = get_conference_cfp(browser, zones, conferences[name], name)
         browser.close()
 
-    return result, time
+    """ append retrieved results to the queue """
+    queue.put([name, result, time])
+
+    return
 
 
 if __name__ == "__main__":
@@ -206,6 +209,25 @@ if __name__ == "__main__":
         },
     }
 
-    results = mp.Pool().map(main, zip(conferences.values(), conferences.keys()))
+    """ spawn processes for simulatneous CfP date retrievals """
+    mp.set_start_method("spawn")
+    queue = mp.Queue()
+    for key in conferences.keys():
+        mp.Process(target=main, args=(conferences, key, queue,)).start()
+
+    results = []
+    progress = ["\r",] + ["." for _ in range(len(conferences.keys()))]
+    for i in range(len(conferences.keys()) + 1):
+        if i < len(conferences.keys()):
+            """ update the progress bar """
+            print(''.join(progress), end='', flush=True)
+            name, result, time = queue.get()
+            results.append([result, time])
+            progress[list(conferences.keys()).index(name) + 1] = "o"
+        else:
+            """ clear the progress bar """
+            print('\r', end='', flush=True)
+
+    """ print retrieved CfP dates in sorted order """
     results = sorted(results, key=lambda x: x[1])
     print('\n'.join(result[0] for result in results))
