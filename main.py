@@ -72,13 +72,13 @@ def get_conference_cfp(
         time = time.replace(tzinfo=timezone.utc)
         """ apply KST """
         time = time.astimezone(zones["KST"])
-        result += str(time)
+        result += time.strftime("%Y %b %d, %H:%M")
     else:
         """ apply timezone if specified """
         time = time.replace(tzinfo=zones[zone])
         """ apply KST """
         time = time.astimezone(zones["KST"])
-        result += str(time)
+        result += time.strftime("%Y %b %d, %H:%M")
 
     """ return time in the same year for sorting """
     time = time.replace(year=1900)
