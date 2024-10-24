@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from zoneinfo import ZoneInfo
 import multiprocessing as mp
 import time
+import os
 
 
 def find_element(
@@ -206,6 +207,18 @@ if __name__ == "__main__":
         },
     }
 
+    """ print saved CfP dates """
+    if os.path.isfile("./cfp_dates.txt"):
+        print("\nSAVED RESULTS")
+        with open("./cfp_dates.txt", 'r') as infile:
+            for line in infile:
+                data = line.split(',')
+                result = "[{n:>15}] ".format(n=data[0])
+                data[1] = datetime.strptime(data[1], "%Y-%m-%d %H:%M:%S%z")
+                result += data[1].strftime("%Y %b %d, %H:%M")
+                print(result)
+    print()
+
     """ spawn processes for simulatneous CfP date retrievals """
     mp.set_start_method("spawn")
     queue = mp.Queue()
@@ -227,6 +240,7 @@ if __name__ == "__main__":
 
     """ print retrieved CfP dates in sorted order """
     results = sorted(results, key=lambda x: x[3])
+    print("RETRIEVED RESULTS")
     print('\n'.join(result[1] for result in results))
 
     """ save retrieved CfP dates into a file """
