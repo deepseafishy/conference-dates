@@ -80,10 +80,7 @@ def get_conference_cfp(
         time = time.astimezone(zones["KST"])
         result += time.strftime("%Y %b %d, %H:%M")
 
-    """ return time in the same year for sorting """
-    time = time.replace(year=1900)
-
-    return result, time
+    return result, time, time.replace(year=1900)
 
 
 def main(
@@ -113,11 +110,11 @@ def main(
         browser = webdriver.Firefox(service=service, options=options)
 
         """ crawl CfP information """
-        result, time = get_conference_cfp(browser, zones, conferences[name], name)
+        result, time_real, time_1900 = get_conference_cfp(browser, zones, conferences[name], name)
         browser.close()
 
     """ append retrieved results to the queue """
-    queue.put([name, result, time])
+    queue.put([name, result, time_real, time_1900])
 
     return
 
@@ -221,13 +218,19 @@ if __name__ == "__main__":
         if i < len(conferences.keys()):
             """ update the progress bar """
             print(''.join(progress), end='', flush=True)
-            name, result, time = queue.get()
-            results.append([result, time])
+            name, result, time_real, time_1900 = queue.get()
+            results.append([name, result, time_real, time_1900])
             progress[list(conferences.keys()).index(name) + 1] = "o"
         else:
             """ clear the progress bar """
             print('\r', end='', flush=True)
 
     """ print retrieved CfP dates in sorted order """
-    results = sorted(results, key=lambda x: x[1])
-    print('\n'.join(result[0] for result in results))
+    results = sorted(results, key=lambda x: x[3])
+    print('\n'.join(result[1] for result in results))
+
+    """ save retrieved CfP dates into a file """
+    with open("./cfp_dates.txt", 'w+') as outfile:
+        for result in results:
+            key_value = [result[0], str(result[2]), '\n']
+            outfile.write(','.join(key_value))
