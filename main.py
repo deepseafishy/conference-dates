@@ -142,7 +142,7 @@ if __name__ == "__main__":
         "NIPS": {
             "url"  : "https://neurips.cc/Conferences/2024",
             "xpath": "/html/body/main/div[2]/div/div/div[7]/table[2]/tbody/tr[4]/td[2]/span[1]",
-            "fmt"  : "%B %d '%y %I:%M %p",
+            "fmt"  : "%b %d '%y",
         },
         "Spring EuroSys": {
             "url"  : "https://2025.eurosys.org",
