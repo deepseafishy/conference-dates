@@ -216,6 +216,12 @@ if __name__ == "__main__":
             "xpath": "/html/body/div/div/div/main/article/div/figure/table/tbody/tr[2]/td[2]",
             "fmt"  : "%B %d, %Y %H:%M%p"
         },
+        "EuroPar": {
+            "url"  : "https://2024.euro-par.org/calls/papers/",
+            "xpath": "/html/body/div[1]/div[2]/div[4]/div/div/div/div/div/div[1]/div/div/div/div/table/tbody/tr[2]/" +
+                     "td[2]/strong/span[1]",
+            "fmt"  : "%B %d, %Y",
+        },
     }
 
     """ print saved CfP dates """
