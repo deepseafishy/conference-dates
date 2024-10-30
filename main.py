@@ -205,6 +205,11 @@ if __name__ == "__main__":
             "xpath": "/html/body/div/div/div/div/div/main/article/div/ul[3]/li[1]",
             "fmt"  : "%B %d, %Y",
         },
+        "SPAA": {
+            "url"  : "https://spaa.acm.org/call-for-papers/",
+            "xpath": "/html/body/div/div/div/main/article/div/figure/table/tbody/tr[2]/td[2]",
+            "fmt"  : "%B %d, %Y %H:%M%p"
+        },
     }
 
     """ print saved CfP dates """
