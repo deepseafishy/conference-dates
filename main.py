@@ -9,6 +9,11 @@ from zoneinfo import ZoneInfo
 import multiprocessing as mp
 import time
 import os
+import re
+
+
+def remove_ordinal_suffix(date: str) -> str:
+    return re.sub("TH|ST|ND|RD", '', date)
 
 
 def find_element(
@@ -45,7 +50,8 @@ def get_conference_cfp(
 
     """ retrieve CfP information """
     try:
-        cfp = find_element(driver, By.XPATH, xpath).text.upper().split()
+        cfp = find_element(driver, By.XPATH, xpath).text.upper()
+        cfp = remove_ordinal_suffix(cfp).split()
     except:
         return result + "Failed XPath", datetime(1900, 1, 1, 0, 0).astimezone(zones["KST"])
 
