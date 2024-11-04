@@ -222,6 +222,11 @@ if __name__ == "__main__":
                      "td[2]/strong/span[1]",
             "fmt"  : "%B %d, %Y",
         },
+        "INFOCOM": {
+            "url"  : "https://infocom2025.ieee-infocom.org",
+            "xpath": "/html/body/div[6]/div/div/div[2]/aside/div/section/p[2]/span[2]",
+            "fmt"  : "%A, %d %B %Y (%H:%M%p"
+        },
     }
 
     """ print saved CfP dates """
