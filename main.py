@@ -41,19 +41,20 @@ def get_conference_cfp(
     xpath = conference["xpath"]
     fmt   = conference["fmt"]
     result = "[{n:>15}] ".format(n=name)
+    time = datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
 
     """ access URL """
     try:
         driver.get(url)
     except:
-        return result + "Failed URL", datetime(1900, 1, 1, 0, 0).astimezone(zones["KST"])
+        return result + "Failed URL", time, time
 
     """ retrieve CfP information """
     try:
         cfp = find_element(driver, By.XPATH, xpath).text.upper()
         cfp = remove_ordinal_suffix(cfp).split()
     except:
-        return result + "Failed XPath", datetime(1900, 1, 1, 0, 0).astimezone(zones["KST"])
+        return result + "Failed XPath", time, time
 
     """ find timezone """
     zone = ""
@@ -72,7 +73,7 @@ def get_conference_cfp(
     if not isinstance(time, datetime):
         """ print retrieved text if parsing failed """
         result += time
-        time = datetime(1900, 1, 1, 0, 0).astimezone(zones["KST"])
+        time = datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
     elif zone == "":
         """ apply AoE if no timezone is specified """
         time += timedelta(hours=36)
