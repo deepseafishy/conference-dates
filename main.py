@@ -47,14 +47,14 @@ def get_conference_cfp(
     try:
         driver.get(url)
     except:
-        return result + "Failed URL", time, time
+        return result + "Failed URL", None, time
 
     """ retrieve CfP information """
     try:
         cfp = find_element(driver, By.XPATH, xpath).text.upper()
         cfp = remove_ordinal_suffix(cfp).split()
     except:
-        return result + "Failed XPath", time, time
+        return result + "Failed XPath", None, time
 
     """ find timezone """
     zone = ""
@@ -70,11 +70,13 @@ def get_conference_cfp(
         except:
             pass
 
+    """ check if parsing failed """
     if not isinstance(time, datetime):
-        """ print retrieved text if parsing failed """
         result += time
-        time = datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
-    elif zone == "":
+        return result, None, datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
+
+    """ apply timezone """
+    if zone == "":
         """ apply AoE if no timezone is specified """
         time += timedelta(hours=36)
         time = time.replace(tzinfo=timezone.utc)
@@ -237,8 +239,11 @@ if __name__ == "__main__":
             for line in infile:
                 data = line.split(',')
                 result = "[{n:>15}] ".format(n=data[0])
-                data[1] = datetime.strptime(data[1], "%Y-%m-%d %H:%M:%S%z")
-                result += data[1].strftime("%Y %b %d, %H:%M")
+
+                if data[1] != "None":
+                    data[1] = datetime.strptime(data[1], "%Y-%m-%d %H:%M:%S%z")
+                    data[1] = data[1].strftime("%Y %b %d, %H:%M")
+                result += data[1]
                 print(result)
     print()
 
