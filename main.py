@@ -139,7 +139,7 @@ if __name__ == "__main__":
         "DATE": {
             "url"  : "https://www.date-conference.com/call-for-papers",
             "xpath": "/html/body/div/main/div/div[3]/article/div/div[1]/table[1]/tbody/tr[3]/td[2]/b",
-            "fmt"  : "%A, %d %B %Y",
+            "fmt"  : "%d %B %Y",
         },
         "ICML": {
             "url"  : "https://icml.cc/Conferences/2024/Dates",
