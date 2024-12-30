@@ -101,6 +101,7 @@ def main(
     zones = {
         "PDT" : ZoneInfo("America/Los_Angeles"),
         "PST" : ZoneInfo("America/Los_Angeles"),
+        "UTC" : ZoneInfo("Europe/London"),
         "CET" : ZoneInfo("Europe/Berlin"),
         "CEST": ZoneInfo("Europe/Berlin"),
         "EST" : ZoneInfo("America/New_York"), # UTC-5
@@ -147,9 +148,9 @@ if __name__ == "__main__":
             "fmt"  : "%b %d '%y",
         },
         "NIPS": {
-            "url"  : "https://neurips.cc/Conferences/2024",
-            "xpath": "/html/body/main/div[2]/div/div/div[7]/table[2]/tbody/tr[4]/td[2]/span[1]",
-            "fmt"  : "%b %d '%y",
+            "url"  : "https://neurips.cc/Conferences/2024/Dates",
+            "xpath": "/html/body/main/div[2]/div/div/div[3]/table/tbody/tr[4]/td[3]/span",
+            "fmt"  : "%b %d '%y %I:%M %p",
         },
         "Spring EuroSys": {
             "url"  : "https://2025.eurosys.org",
