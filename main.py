@@ -269,7 +269,8 @@ if __name__ == "__main__":
 
     """ print retrieved CfP dates in sorted order """
     results = sorted(results, key=lambda x: x[3])
-    print("RETRIEVED RESULTS")
+    header = "RETRIEVED RESULTS"
+    print(f"{header:{len(conferences.keys())}s}")
     print('\n'.join(f"{result[1]} ({result[-1]})" for result in results))
 
     """ save retrieved CfP dates into a file """
