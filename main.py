@@ -260,7 +260,7 @@ if __name__ == "__main__":
             """ update the progress bar """
             print(''.join(progress), end='', flush=True)
             name, result, time_real, time_1900 = queue.get()
-            results.append([name, result, time_real, time_1900])
+            results.append([name, result, time_real, time_1900, conferences[name]["url"]])
             progress[list(conferences.keys()).index(name) + 1] = "o"
         else:
             """ clear the progress bar """
@@ -269,7 +269,7 @@ if __name__ == "__main__":
     """ print retrieved CfP dates in sorted order """
     results = sorted(results, key=lambda x: x[3])
     print("RETRIEVED RESULTS")
-    print('\n'.join(result[1] for result in results))
+    print('\n'.join(f"{result[1]} ({result[-1]})" for result in results))
 
     """ save retrieved CfP dates into a file """
     with open("./cfp_dates.txt", 'w+') as outfile:
