@@ -130,108 +130,25 @@ def main(
     return
 
 
+def read_conferences() -> dict[str, dict[str, str]]:
+    conferences = {}
+
+    with open("conferences.txt", 'r') as infile:
+        for line in infile:
+            """ first line consists of conference name """
+            name = line.rstrip()
+            conferences[name] = {}
+            """ read in required information """
+            for key in ["url", "xpath", "fmt"]:
+                conferences[name][key] = infile.readline().rstrip()
+            """ skip empty line """
+            infile.readline()
+
+    return conferences
+
+
 if __name__ == "__main__":
-    conferences = {
-        "DAC": {
-            "url"  : "https://www.dac.com/Conference/2025-Call-for-Contributions",
-            "xpath": "/html/body/form/main/div[1]/div/div/div[2]/div/div/div/div/div/div/ul[1]/li[2]",
-            "fmt"  : "%B %d, %Y %I:%M %p",
-        },
-        "DATE": {
-            "url"  : "https://www.date-conference.com/call-for-papers",
-            "xpath": "/html/body/div/main/div/div[3]/article/div/div[1]/table[1]/tbody/tr[3]/td[2]/b",
-            "fmt"  : "%d %B %Y",
-        },
-        "ICML": {
-            "url"  : "https://icml.cc/Conferences/2024/Dates",
-            "xpath": "/html/body/main/div[2]/div/div/div[3]/table/tbody/tr[13]/td[3]/span",
-            "fmt"  : "%b %d '%y",
-        },
-        "NIPS": {
-            "url"  : "https://neurips.cc/Conferences/2024/Dates",
-            "xpath": "/html/body/main/div[2]/div/div/div[3]/table/tbody/tr[4]/td[3]/span",
-            "fmt"  : "%b %d '%y %I:%M %p",
-        },
-        "Spring EuroSys": {
-            "url"  : "https://2025.eurosys.org",
-            "xpath": "/html/body/section/div/div/div/ul[1]/li[2]/strong",
-            "fmt"  : "%A, %B %d, %Y",
-        },
-        "Fall EuroSys": {
-            "url"  : "https://2025.eurosys.org",
-            "xpath": "/html/body/section/div/div/div/ul[2]/li[2]/strong",
-            "fmt"  : "%A, %B %d, %Y",
-        },
-        "HPDC": {
-            "url"  : "https://www.hpdc.org/2024/calls-cfp.html",
-            "xpath": "/html/body/div/div/div[1]/div/div[2]/div[2]/div[1]/div[2]/ul/li[1]/del/p/strong",
-            "fmt"  : "%B %d, %Y.",
-        },
-        "OSDI": {
-            "url"  : "https://www.usenix.org/conference/osdi25/call-for-papers",
-            "xpath": "/html/body/div[2]/main/section/div[3]/article/div/div/div/div/div[1]/div/div/div/div/div/div" +
-                     "/div/div/div/div/div/div/ul[1]/li[2]/strong",
-            "fmt"  : "%A, %B %d, %Y, %I:%M %p",
-        },
-        "PACT": {
-            "url"  : "https://pact2024.github.io",
-            "xpath": "/html/body/div/div/div[2]/ul[1]/li[2]",
-            "fmt"  : "%B %d, %Y",
-        },
-        "PPoPP": {
-            "url"  : "https://ppopp25.sigplan.org/dates",
-            "xpath": "/html/body/div/div[3]/div[2]/div/table/tbody/tr[4]/td[1]",
-            "fmt"  : "%a %d %b %Y",
-        },
-        "FAST": {
-            "url"  : "https://www.usenix.org/conference/fast25/call-for-papers",
-            "xpath": "/html/body/div[2]/main/section/div[3]/article/div/div/div/div/div[1]/div/div/div/div/div/div" +
-                     "/div/div/div/div/div/div/ul[1]/li[1]/strong",
-            "fmt"  : "%A, %B %d, %Y, %I:%M %p",
-        },
-        "ATC": {
-            "url"  : "https://www.usenix.org/conference/atc25/call-for-papers",
-            "xpath": "/html/body/div[2]/main/section/div[3]/article/div/div/div/div/div[1]/div/div/div/div/div/div" +
-                     "/div/div/div/div/div/div/ul/li[2]/strong",
-            "fmt"  : "%A, %B %d, %Y, %I:%M %p",
-        },
-        "APSys": {
-            "url"  : "https://ap-sys.org",
-            "xpath": "/html/body/main/div/div[2]/div[2]/div[2]/div/aside/p[3]/b",
-            "fmt"  : "%B %d, %Y",
-        },
-        "Spring ASPLOS": {
-            "url"  : "https://www.asplos-conference.org/asplos2025/cfp",
-            "xpath": "/html/body/div/div/div/div/div/main/article/div/ul[1]/li[2]",
-            "fmt"  : "%B %d, %Y",
-        },
-        "Summer ASPLOS": {
-            "url"  : "https://www.asplos-conference.org/asplos2025/cfp",
-            "xpath": "/html/body/div/div/div/div/div/main/article/div/ul[2]/li[2]",
-            "fmt"  : "%B %d, %Y",
-        },
-        "Fall ASPLOS": {
-            "url"  : "https://www.asplos-conference.org/asplos2025/cfp",
-            "xpath": "/html/body/div/div/div/div/div/main/article/div/ul[3]/li[1]",
-            "fmt"  : "%B %d, %Y",
-        },
-        "SPAA": {
-            "url"  : "https://spaa.acm.org/call-for-papers/",
-            "xpath": "/html/body/div/div/div/main/article/div/figure/table/tbody/tr[2]/td[2]",
-            "fmt"  : "%B %d, %Y %H:%M%p"
-        },
-        "EuroPar": {
-            "url"  : "https://2024.euro-par.org/calls/papers/",
-            "xpath": "/html/body/div[1]/div[2]/div[4]/div/div/div/div/div/div[1]/div/div/div/div/table/tbody/tr[2]/" +
-                     "td[2]/strong/span[1]",
-            "fmt"  : "%B %d, %Y",
-        },
-        "INFOCOM": {
-            "url"  : "https://infocom2025.ieee-infocom.org",
-            "xpath": "/html/body/div[6]/div/div/div[2]/aside/div/section/p[2]/span[2]",
-            "fmt"  : "%A, %d %B %Y (%H:%M%p"
-        },
-    }
+    conferences = read_conferences()
 
     """ print saved CfP dates """
     if os.path.isfile("./cfp_dates.txt"):
