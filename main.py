@@ -13,7 +13,7 @@ import re
 
 
 def remove_ordinal_suffix(date: str) -> str:
-    return re.sub("TH|ST|ND|RD", '', date)
+    return re.sub("TH|ST|ND|RD", "", date)
 
 
 def find_element(
@@ -37,9 +37,9 @@ def get_conference_cfp(
     conference: dict[str, str],
     name: str,
 ) -> str:
-    url   = conference["url"]
+    url = conference["url"]
     xpath = conference["xpath"]
-    fmt   = conference["fmt"]
+    fmt = conference["fmt"]
     result = "[{n:>15}] ".format(n=name)
     default_time = datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
 
@@ -63,10 +63,10 @@ def get_conference_cfp(
 
     """ format string """
     fmt_len, cfp_len = len(fmt.split()), len(cfp)
-    time = ' '.join(cfp)
+    time = " ".join(cfp)
     for i in range(cfp_len - fmt_len + 1):
         try:
-            time = datetime.strptime(' '.join(cfp[i:i + fmt_len]), fmt)
+            time = datetime.strptime(" ".join(cfp[i : i + fmt_len]), fmt)
         except:
             pass
 
@@ -77,14 +77,14 @@ def get_conference_cfp(
 
     """ apply timezone """
     if zone == "":
-        """ apply AoE if no timezone is specified """
+        """apply AoE if no timezone is specified"""
         time += timedelta(hours=36)
         time = time.replace(tzinfo=timezone.utc)
         """ apply KST """
         time = time.astimezone(zones["KST"])
         result += time.strftime("%Y %b %d, %H:%M")
     else:
-        """ apply timezone if specified """
+        """apply timezone if specified"""
         time = time.replace(tzinfo=zones[zone])
         """ apply KST """
         time = time.astimezone(zones["KST"])
@@ -99,17 +99,17 @@ def main(
     queue: mp.Queue,
 ) -> None:
     zones = {
-        "PDT" : ZoneInfo("America/Los_Angeles"),
-        "PST" : ZoneInfo("America/Los_Angeles"),
-        "UTC" : ZoneInfo("Europe/London"),
-        "CET" : ZoneInfo("Europe/Berlin"),
+        "PDT": ZoneInfo("America/Los_Angeles"),
+        "PST": ZoneInfo("America/Los_Angeles"),
+        "UTC": ZoneInfo("Europe/London"),
+        "CET": ZoneInfo("Europe/Berlin"),
         "CEST": ZoneInfo("Europe/Berlin"),
-        "EST" : ZoneInfo("America/New_York"), # UTC-5
-        "KST" : ZoneInfo("Asia/Seoul"),
+        "EST": ZoneInfo("America/New_York"),  # UTC-5
+        "KST": ZoneInfo("Asia/Seoul"),
     }
 
     with Display(visible=False):
-        """ set up firefox.service """
+        """set up firefox.service"""
         service = webdriver.firefox.service.Service()
         service.path = "/usr/bin/geckodriver"
 
@@ -121,7 +121,9 @@ def main(
         browser = webdriver.Firefox(service=service, options=options)
 
         """ crawl CfP information """
-        result, time_real, time_1900 = get_conference_cfp(browser, zones, conferences[name], name)
+        result, time_real, time_1900 = get_conference_cfp(
+            browser, zones, conferences[name], name
+        )
         browser.close()
 
     """ append retrieved results to the queue """
@@ -133,9 +135,9 @@ def main(
 def read_conferences() -> dict[str, dict[str, str]]:
     conferences = {}
 
-    with open("conferences.txt", 'r') as infile:
+    with open("conferences.txt", "r") as infile:
         for line in infile:
-            """ first line consists of conference name """
+            """first line consists of conference name"""
             name = line.rstrip()
             conferences[name] = {}
             """ read in required information """
@@ -150,12 +152,12 @@ def read_conferences() -> dict[str, dict[str, str]]:
 if __name__ == "__main__":
     conferences = read_conferences()
 
-    """ print saved CfP dates """
+    """print saved CfP dates"""
     if os.path.isfile("./cfp_dates.txt"):
         print("\nSAVED RESULTS")
-        with open("./cfp_dates.txt", 'r') as infile:
+        with open("./cfp_dates.txt", "r") as infile:
             for line in infile:
-                data = line.split(',')
+                data = line.split(",")
                 result = "[{n:>15}] ".format(n=data[0])
 
                 if data[1] != "None":
@@ -169,29 +171,40 @@ if __name__ == "__main__":
     mp.set_start_method("spawn")
     queue = mp.Queue()
     for key in conferences.keys():
-        mp.Process(target=main, args=(conferences, key, queue,)).start()
+        mp.Process(
+            target=main,
+            args=(
+                conferences,
+                key,
+                queue,
+            ),
+        ).start()
 
     results = []
-    progress = ["\r",] + ["." for _ in range(len(conferences.keys()))]
+    progress = [
+        "\r",
+    ] + ["." for _ in range(len(conferences.keys()))]
     for i in range(len(conferences.keys()) + 1):
         if i < len(conferences.keys()):
-            """ update the progress bar """
-            print(''.join(progress), end='', flush=True)
+            """update the progress bar"""
+            print("".join(progress), end="", flush=True)
             name, result, time_real, time_1900 = queue.get()
-            results.append([name, result, time_real, time_1900, conferences[name]["url"]])
+            results.append(
+                [name, result, time_real, time_1900, conferences[name]["url"]]
+            )
             progress[list(conferences.keys()).index(name) + 1] = "o"
         else:
-            """ clear the progress bar """
-            print('\r', end='', flush=True)
+            """clear the progress bar"""
+            print("\r", end="", flush=True)
 
     """ print retrieved CfP dates in sorted order """
     results = sorted(results, key=lambda x: x[3])
     header = "RETRIEVED RESULTS"
     print(f"{header:{len(conferences.keys())}s}")
-    print('\n'.join(f"{result[1]} ({result[-1]})" for result in results))
+    print("\n".join(f"{result[1]} ({result[-1]})" for result in results))
 
     """ save retrieved CfP dates into a file """
-    with open("./cfp_dates.txt", 'w+') as outfile:
+    with open("./cfp_dates.txt", "w+") as outfile:
         for result in results:
-            key_value = [result[0], str(result[2]), '\n']
-            outfile.write(','.join(key_value))
+            key_value = [result[0], str(result[2]), "\n"]
+            outfile.write(",".join(key_value))
