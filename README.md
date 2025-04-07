@@ -41,10 +41,6 @@ python3 main.py
 - [x] Create multiple processes to gather information faster
 - [x] Apply time zones
 - [x] Sort conferences by the dates
-- [ ] Add author notification dates
-- [ ] Automatically find CfP dates
+- [x] Add author notification dates
 - [ ] Automatically look for extended CfP dates
 - [ ] Automatically renew conferences yearly
-  - [ ] Add conference dates
-  - [ ] Renew conferences after conference dates pass
-  - [ ] Show previous conference dates if the new conference site doesn't exist
