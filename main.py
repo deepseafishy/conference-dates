@@ -40,6 +40,7 @@ def get_conference_cfp(
     url = conference["url"]
     result = "[{n:>15}]".format(n=name)
     time = datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
+    cfp_time = datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
 
     """ access URL """
     url_failed = False
@@ -96,7 +97,10 @@ def get_conference_cfp(
                 time = time.astimezone(zones["KST"])
                 result += time.strftime("  %Y %b %d, %H:%M ")
 
-    return result, time
+            if "cfp" in xpath_key:
+                cfp_time = time
+
+    return result, cfp_time
 
 
 def main(
