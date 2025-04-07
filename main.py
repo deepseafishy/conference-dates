@@ -13,7 +13,7 @@ import re
 
 
 def remove_ordinal_suffix(date: str) -> str:
-    return re.sub("TH|ST|ND|RD", "", date)
+    return re.sub("([0-9]+)[TH|ST|ND|RD]", "\1", date)
 
 
 def find_element(
@@ -36,61 +36,67 @@ def get_conference_cfp(
     zones: dict[str, str],
     conference: dict[str, str],
     name: str,
-) -> str:
+) -> tuple[str, datetime]:
     url = conference["url"]
-    xpath = conference["xpath"]
-    fmt = conference["fmt"]
-    result = "[{n:>15}] ".format(n=name)
-    default_time = datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
+    result = "[{n:>15}]".format(n=name)
+    time = datetime(1900, 1, 2, 0, 0).astimezone(zones["KST"])
 
     """ access URL """
+    url_failed = False
     try:
         driver.get(url)
     except:
-        return result + "Failed URL", None, default_time
+        result += "  Failed URL         "
+        result += "                     "
+        url_failed = True
 
-    """ retrieve CfP information """
-    try:
-        cfp = find_element(driver, By.XPATH, xpath).text.upper()
-        cfp = remove_ordinal_suffix(cfp).split()
-    except:
-        return result + "Failed XPath", None, default_time
+    if not url_failed:
+        for xpath_key, fmt_key in zip(["cfp_xpath", "an_xpath"], ["cfp_fmt", "an_fmt"]):
+            xpath = conference[xpath_key]
+            fmt = conference[fmt_key]
 
-    """ find timezone """
-    zone = ""
-    for substring in cfp:
-        zone = substring if substring in zones.keys() else zone
+            """ retrieve CfP information """
+            try:
+                cfp = find_element(driver, By.XPATH, xpath).text.upper()
+                cfp = remove_ordinal_suffix(cfp).split()
+            except:
+                result += "  Failed XPath       "
+                continue
 
-    """ format string """
-    fmt_len, cfp_len = len(fmt.split()), len(cfp)
-    time = " ".join(cfp)
-    for i in range(cfp_len - fmt_len + 1):
-        try:
-            time = datetime.strptime(" ".join(cfp[i : i + fmt_len]), fmt)
-        except:
-            pass
+            """ find timezone """
+            zone = ""
+            for substring in cfp:
+                zone = substring if substring in zones.keys() else zone
 
-    """ check if parsing failed """
-    if not isinstance(time, datetime):
-        result += time
-        return result, None, default_time
+            """ format string """
+            fmt_len, cfp_len = len(fmt.split()), len(cfp)
+            for i in range(cfp_len - fmt_len + 1):
+                try:
+                    time = datetime.strptime(" ".join(cfp[i : i + fmt_len]), fmt)
+                except:
+                    pass
 
-    """ apply timezone """
-    if zone == "":
-        """apply AoE if no timezone is specified"""
-        time += timedelta(hours=36)
-        time = time.replace(tzinfo=timezone.utc)
-        """ apply KST """
-        time = time.astimezone(zones["KST"])
-        result += time.strftime("%Y %b %d, %H:%M")
-    else:
-        """apply timezone if specified"""
-        time = time.replace(tzinfo=zones[zone])
-        """ apply KST """
-        time = time.astimezone(zones["KST"])
-        result += time.strftime("%Y %b %d, %H:%M")
+            """ check if parsing failed """
+            if not isinstance(time, datetime) or time.year == 1900:
+                result += "  Parsing failed     "
+                continue
 
-    return result, time, time.replace(year=1900)
+            """ apply timezone """
+            if zone == "":
+                """apply AoE if no timezone is specified"""
+                time += timedelta(hours=36)
+                time = time.replace(tzinfo=timezone.utc)
+                """ apply KST """
+                time = time.astimezone(zones["KST"])
+                result += time.strftime("  %Y %b %d, %H:%M ")
+            else:
+                """apply timezone if specified"""
+                time = time.replace(tzinfo=zones[zone])
+                """ apply KST """
+                time = time.astimezone(zones["KST"])
+                result += time.strftime("  %Y %b %d, %H:%M ")
+
+    return result, time
 
 
 def main(
@@ -121,13 +127,11 @@ def main(
         browser = webdriver.Firefox(service=service, options=options)
 
         """ crawl CfP information """
-        result, time_real, time_1900 = get_conference_cfp(
-            browser, zones, conferences[name], name
-        )
+        result, time = get_conference_cfp(browser, zones, conferences[name], name)
         browser.close()
 
     """ append retrieved results to the queue """
-    queue.put([name, result, time_real, time_1900])
+    queue.put([name, result, time])
 
     return
 
@@ -141,7 +145,7 @@ def read_conferences() -> dict[str, dict[str, str]]:
             name = line.rstrip()
             conferences[name] = {}
             """ read in required information """
-            for key in ["url", "xpath", "fmt"]:
+            for key in ["url", "cfp_xpath", "cfp_fmt", "an_xpath", "an_fmt"]:
                 conferences[name][key] = infile.readline().rstrip()
             """ skip empty line """
             infile.readline()
@@ -181,27 +185,26 @@ if __name__ == "__main__":
         ).start()
 
     results = []
-    progress = [
-        "\r",
-    ] + ["." for _ in range(len(conferences.keys()))]
+    progress = ["\r"]
+    progress += ["." for _ in range(len(conferences.keys()))]
     for i in range(len(conferences.keys()) + 1):
         if i < len(conferences.keys()):
             """update the progress bar"""
             print("".join(progress), end="", flush=True)
-            name, result, time_real, time_1900 = queue.get()
-            results.append(
-                [name, result, time_real, time_1900, conferences[name]["url"]]
-            )
+            name, result, time = queue.get()
+            results.append([name, result, time, conferences[name]["url"]])
             progress[list(conferences.keys()).index(name) + 1] = "o"
         else:
             """clear the progress bar"""
             print("\r", end="", flush=True)
 
     """ print retrieved CfP dates in sorted order """
-    results = sorted(results, key=lambda x: x[3])
+    results = sorted(results, key=lambda x: x[2])
     header = "RETRIEVED RESULTS"
     print(f"{header:{len(conferences.keys())}s}")
-    print("\n".join(f"{result[1]} ({result[-1]})" for result in results))
+    header = "                  |CfP---------------| |Notification------|"
+    print(header)
+    print("\n".join(f"{result[1]}  ({result[-1]})" for result in results))
 
     """ save retrieved CfP dates into a file """
     with open("./cfp_dates.txt", "w+") as outfile:
