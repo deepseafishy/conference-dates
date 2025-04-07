@@ -202,9 +202,11 @@ if __name__ == "__main__":
     results = sorted(results, key=lambda x: x[2])
     header = "RETRIEVED RESULTS"
     print(f"{header:{len(conferences.keys())}s}")
-    header = "                  |CfP---------------| |Notification------|"
+    header = "                     |CfP---------------| |Notification------|"
     print(header)
-    print("\n".join(f"{result[1]}  ({result[-1]})" for result in results))
+    for result in results:
+        prefix = " x " if result[2].replace(tzinfo=None) <= datetime.today() else "   "
+        print(f"{prefix}{result[1]}  ({result[-1]})")
 
     """ save retrieved CfP dates into a file """
     with open("./cfp_dates.txt", "w+") as outfile:
