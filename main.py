@@ -179,14 +179,7 @@ if __name__ == "__main__":
     mp.set_start_method("spawn")
     queue = mp.Queue()
     for key in conferences.keys():
-        mp.Process(
-            target=main,
-            args=(
-                conferences,
-                key,
-                queue,
-            ),
-        ).start()
+        mp.Process(target=main, args=(conferences, key, queue)).start()
 
     results = []
     progress = ["\r"]
