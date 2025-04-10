@@ -147,13 +147,19 @@ def print_saved_cfp(path: str) -> None:
     if os.path.isfile("./cfp_dates.txt"):
         with open("./cfp_dates.txt", "r") as infile:
             for line in infile:
-                data = line.split(",")
-                result = "[{n:>15}] ".format(n=data[0])
+                prefix = " x "
 
+                data = line.split(",")
                 if data[1] != "None":
                     data[1] = datetime.strptime(data[1], "%Y-%m-%d %H:%M:%S%z")
+                    prefix = (
+                        "   "
+                        if datetime.today() <= data[1].replace(tzinfo=None)
+                        else prefix
+                    )
                     data[1] = data[1].strftime("%Y %b %d, %H:%M")
-                result += data[1]
+
+                result = f"{prefix}[{data[0]:>15}] {data[1]}"
                 print(result)
     else:
         print("No saved results")
@@ -216,5 +222,9 @@ if __name__ == "__main__":
     """ save retrieved CfP dates into a file """
     with open("./cfp_dates.txt", "w+") as outfile:
         for result in results:
-            key_value = [result[0], str(result[2]), "\n"]
+            key_value = [
+                result[0],
+                "None" if result[2].year == 1900 else str(result[2]),
+                "\n",
+            ]
             outfile.write(",".join(key_value))
