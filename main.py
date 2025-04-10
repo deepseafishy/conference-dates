@@ -140,6 +140,26 @@ def main(
     return
 
 
+def print_saved_cfp(path: str) -> None:
+    print("\nSAVED RESULTS")
+
+    """print saved CfP dates"""
+    if os.path.isfile("./cfp_dates.txt"):
+        with open("./cfp_dates.txt", "r") as infile:
+            for line in infile:
+                data = line.split(",")
+                result = "[{n:>15}] ".format(n=data[0])
+
+                if data[1] != "None":
+                    data[1] = datetime.strptime(data[1], "%Y-%m-%d %H:%M:%S%z")
+                    data[1] = data[1].strftime("%Y %b %d, %H:%M")
+                result += data[1]
+                print(result)
+    else:
+        print("No saved results")
+    print()
+
+
 def read_conferences() -> dict[str, dict[str, str]]:
     conferences = {}
 
@@ -158,22 +178,10 @@ def read_conferences() -> dict[str, dict[str, str]]:
 
 
 if __name__ == "__main__":
+    cfp_path = "./cfp_dates.txt"
+
     conferences = read_conferences()
-
-    """print saved CfP dates"""
-    if os.path.isfile("./cfp_dates.txt"):
-        print("\nSAVED RESULTS")
-        with open("./cfp_dates.txt", "r") as infile:
-            for line in infile:
-                data = line.split(",")
-                result = "[{n:>15}] ".format(n=data[0])
-
-                if data[1] != "None":
-                    data[1] = datetime.strptime(data[1], "%Y-%m-%d %H:%M:%S%z")
-                    data[1] = data[1].strftime("%Y %b %d, %H:%M")
-                result += data[1]
-                print(result)
-    print()
+    print_saved_cfp(cfp_path)
 
     """ spawn processes for simulatneous CfP date retrievals """
     mp.set_start_method("spawn")
